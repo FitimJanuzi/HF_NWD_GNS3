@@ -298,30 +298,45 @@ nun das gleiche beim Router Zürich
 
 Nachdem wir eine Netzwerk zu Netzwerk Tunnel mit Wireguard aufgebaut haben, bauen wir nun einen PC zu PC Tunnelk mit dem VPN Roadwarrior auf, dazu konfigurieren wir den Wireguard Interface
 
+beim Router Lausanne wird nun eine WireGuard-Schnittstelle erstellt, die auf Port 13233 mit einer maximalen Datengrösse von 1420 Bytes lauscht. Der Schnittstelle wird die IP-Adresse von Worker1 192.168.14.1/24 im Zürich Netzwerk 192.168.14.0/24 zugeordnet.
+
+> /interface/wireguard add listen-port=13233 mtu=1420 name=MTW_LS
+> /ip/address add address=192.168.14.1/24 interface=MTW_LS network=192.168.14.0
+
+
+![Bild3](/Bilder/Bild51.PNG)
+
+
+Nun wird ein neuer WireGuard-Peer erstellt und der WireGuard-Schnittstelle "MTW_LS" hinzugefügt
+
+> /interface/wireguard/peers add allowed-address=192.168.14.2/32 interface=MTW_LS public-key=\
+"9nSj/xiApoAJrZX99+EwJuiDH5Xp5WZrD2ceCecGrgc="
+
+![Bild3](/Bilder/Bild55.PNG)
+
+wie oben, muss auch hier eine Firewall-Regel eigepflegt werden um einer Blockade entgegenzuwirken
+
+> /ip/firewall/filter add chain=forward action=accept src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
+ 
+
+![Bild3](/Bilder/Bild52.PNG)
+
+Nun erstellen wir eine Regel die den Datenverkehr über WireGuard erlaubt, indem es den Datenverkehr in der "input"-Kette der Firewall akzeptiert. 
+ 
+/ip/firewall/filter add action=accept chain=input comment="allow WireGuard traffic" src-address=192.168.14.0/24
+
+ ![Bild3](/Bilder/Bild53.PNG)
+
+
+### Zugriff auf File-Share
+
+Damit Worker1 aus dem Internetcafe zugriff auf den Debian-PC von Lausanne bekommt, muss zunächst der Debian Server vorberietet werden
+
+
+
 
  
 
-/ip firewall filter
-
-add chain=forward action=accept src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
- 
-
-
-Damit die Verbindung nicht von der Firewall blockiert wird, erstellen wir noch die folgende Regel wleche Daten über das UDP Protkoll auf dem Port 13233 akzepriert.
-/ip firewall filter
-add action=accept chain=input comment="allow WireGuard" dst-port=13233 protocol=udp place-before=1
-
- 
-
-Nun erlauben wir den Geräten via RoadWarrior zugriff auf die Dienste des Routers
-/ip firewall filter
-add action=accept chain=input comment="allow WireGuard traffic" src-address=192.168.14.0/24 place-before=1  
-
-
-/ip firewall nat
-add action=accept chain=srcnat dst-address=192.168.11.0/24 src-address=192.168.13.0/24
-
-
 
 
 
@@ -334,52 +349,3 @@ add action=accept chain=srcnat dst-address=192.168.11.0/24 src-address=192.168.1
 
 
 
- 
-
-
-
-
-
-
-
-
-
-Router BAseL:
-/interface/wireguard print
-name="wireguardZH" mtu=1420 listen-port=13234 private-key="oGDJYeJg+kcUjqZUa0bw3BpWhsvPh2HdT5iGFBS20l4="public-key="lZexpEtJY2Pdb4X0oC7D63iOTMZqziYirHybnePaXkg="
-
-
-
-Debian: 
-keine samba
-
-apt list 
-update apt list:
-sudo apt update
-
-
-mkdir -v /home/worker/shared_folder
-
-mkdir home 
-mkdir home/worker1
-mkdir home/worker1/shared_folder
-kontrolle: ls home/worker1
-
- 
-
-chown worker1 home/worker1/shared_folder
-chgrp worker1 home/worker1/shared_folder
-
-
-dann das fole öffnen:
-sudo nano /etc/samba/smb.conf
-
-und eintragen:
-
-[shared_folder]
-path = /home/worker/shared_folder
-readonly = no
-inherit permisson = yes
-  
-
-Und unter gleichen Namne speichern
