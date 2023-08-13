@@ -142,7 +142,7 @@ Mit dieser Regel, wird der ausgehende Datenverkehr, der das Interface "ether1" v
 
  
 
-### IPsec: Site-To-Site - Basel <=> Lausanne
+### Aufbau IPsec: Site-To-Site / Basel <=> Lausanne
 
 #### Konfiguration Router Lausanne 
 
@@ -215,72 +215,55 @@ das gleiche nun für Basel
 
   ![Bild3](/Bilder/Bild21.png)
 
-/ip ipsec policy add dst-address=192.168.13.0/24 peer=ike1-LS proposal=ike1-LS src-address=192.168.11.0/24 tunnel=yes
+> /ip/ipsec/policy add dst-address=192.168.13.0/24 peer=ike1-LS proposal=ike1-LS src-address=192.168.11.0/24 tunnel=yes
 
   ![Bild3](/Bilder/Bild22.png)
 
 
+> /ip/firewall/nat add action=accept chain=srcnat dst-address=192.168.13.0/24 src-address=192.168.11.0/24
 
-/ip/firewall/nat add action=accept chain=srcnat dst-address=192.168.13.0/24 src-address=192.168.11.0/24
+![Bild3](/Bilder/Bild23.png)
 
-![Bild3](/Bilder/Bild20.png)
+> /ip/firewall/filter add chain=forward action=accept src-address=192.168.11.0/24 dst-address=192.168.13.0/24 connection-state=established,related
 
-!!!
-/ip firewall filter
-add chain=forward action=accept place-before=0 src-address=192.168.11.0/24 dst-address=192.168.13.0/24 connection-state=established,related
-add chain=forward action=accept place-before=1 src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
+> /ip/firewall/filter add chain=forward action=accept src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
 
-
-name="default" auth-algorithms=sha1
-      enc-algorithms=aes-256-cbc,aes-192-cbc,aes-128-cbc lifetime=30m
-      pfs-group=modp1024
-
-/ip ipsec proposal
-add enc-algorithms= aes-256-cbc,aes-192-cbc,aes-128-cbc name=default pfs-group=modp1024
-
- ![Bild3](/Bilder/Bild20.png)
+![Bild3](/Bilder/Bild47.PNG)
 
 
 
+Sobald der Wireguard (unterhalb) aufgebaut wurde, wurde der IPSec Tunnel kontrolliert, indem wir über den Worker1 auf die Weboberfläche des Lausane und Basel Router mittels der IP zugriffen:  
+
+![Bild3](/Bilder/Bild25.png)
+
+![Bild3](/Bilder/Bild26.png)
 
 
 
+### Aufbau WireGuard: Site-To-Site / Zürich <=> Lausanne
 
+Nun muss der VPN WireGuard eingerichtet werden, dazu müssen auf beide Seiten Schnittstelen konfiguriert werden. Diese Schnittstelle werden den eingehenden Datenverkehr über einen zu bestimmenden Port empfangen der für sichere Netzwerkkommunikation genutzt wird.
 
+Router Lausanne
 
-/ip firewall raw
-add action=notrack chain=prerouting src-address=192.168.11.0/24 dst-address=192.168.13.0/24
-
- ![Bild3](/Bilder/Bild20.png)
+> /interface/wireguard add listen-port=13234 name=wireguardZH
  
+![Bild3](/Bilder/Bild27.png)
 
 
-Sobald der Wireguard (unterhalb) aufgebaut wurde, wurde der pSec Tunnel kontrolliert, indem wir über den Worker1 auf die Weboberfläche des Lausane-Router mittels der IP zugriffen:  
+
+das gleiche beim Router Zürich 
+
+> /interface/wireguard> add listen-port=13234 name=wireguardLS
  
+![Bild3](/Bilder/Bild28.png)
  
-Auch der Basel Router wurde kontrolliert
-Site to Site WireGuard - Lausanne to Zürich
-Anhand der folgenden Anleitung https://help.mikrotik.com/docs/display/ROS/WireGuard
-WireGuard interface configuration:
-Im Prinzip müssen beide Routers (LS-R1 und ZH-R1) konfiguriert werden, sodass die Private und Public Keys automatisch generiert werden.
-Der gesetzte Listen-Port muss bei beiden der gleiche sein (in unserem Fall "13234")
-LS-R1
+Nun müssen wir den Partner (Peer) definieren. Für die Verschlüsselung und Authentifizierung für die Kommunikation zwischen den Peers geben wir den Public-key von Zürich mit
 
-/interface/wireguard
-add listen-port=13234 name=wireguardZH
- 
- ![Bild3](/Bilder/Bild20.png)
+> /interface/wireguard/peers add allowed-address=192.168.9.0/24 endpoint-address=203.0.113.98 endpoint-port=13234 interface=wireguardZH \public-key="yWwRYBChRvZOTiBdGKaxaq5+R9eFslvoMIHdDOljGiE="
 
+![Bild3](/Bilder/Bild48.PNG)
 
-
-
-ZH R1
-
-/interface/wireguard> add listen-port=13234 name=wireguardLS
- 
- ![Bild3](/Bilder/Bild20.png)
-Peer configuration
-Die Peer configuration definiert, wer die WireGuard-Schnittstelle nutzen kann und welche Art von Datenverkehr darüber gesendet werden kann. Um die Gegenstelle zu identifizieren, muss ihr öffentlicher Schlüssel zusammen mit der erstellten WireGuard-Schnittstelle angegeben werden.
 
 LS-R1
 
