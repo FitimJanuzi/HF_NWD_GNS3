@@ -240,7 +240,7 @@ Sobald der Wireguard (unterhalb) aufgebaut wurde, wurde der IPSec Tunnel kontrol
 
 
 
-### Aufbau WireGuard: Site-To-Site / Zürich <=> Lausanne
+### Aufbau VPN WireGuard: Site-To-Site / Zürich <=> Lausanne
 
 Nun muss der VPN WireGuard eingerichtet werden, dazu müssen auf beide Seiten Schnittstelen konfiguriert werden. Diese Schnittstelle werden den eingehenden Datenverkehr über einen zu bestimmenden Port empfangen der für sichere Netzwerkkommunikation genutzt wird.
 
@@ -294,8 +294,9 @@ nun das gleiche beim Router Zürich
  
 
 
+### Aufbau VPN Roadwarior: PC-to-PC  / Worker1 <=> Debian
 
-
+Nachdem wir eine Netzwerk zu Netzwerk Tunnel mit Wireguard aufgebaut haben, bauen wir nun einen PC zu PC Tunnelk mit dem VPN Roadwarrior auf, dazu konfigurieren wir den Wireguard Interface
 
 
  
