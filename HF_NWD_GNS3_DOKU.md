@@ -69,13 +69,13 @@ Informieren Sie sich bei der Kursleitung betreffend Abgabetermin und Bewertungsk
 
 ## Aufbau Lausanne :
  
- AUF GNS3 wird im Firmenstandort Lausanne wird zunächst ein Router und ein Debian System aufgebaut
+ AUF GNS3  im Firmenstandort Lausanne wird zunächst ein Router und ein Debian System aufgebaut
 
 ![Bild1](/Bilder/1.PNG)
 
-Dannach erfolgt die Konfiguration:
+Dannach erfolgt die Konfiguration von Lausanne:
 
-Router
+Router Lausanne
 
 Zunächst den Namen geändert
 
@@ -123,7 +123,7 @@ und der Range für DHCP gesetzt
 ![Bild3](/Bilder/Bild6.png)
 
 
-nun muss für den erestellten Pool auch ein Ether definiert werden, den wir auch benennen
+nun muss für den erstellten Pool auch ein Ether definiert werden, den wir auch benennen
 
 > /ip/dhcp-server/add address-pool=dhcp_pool1 interface=ether2 name=dhcp1
 
@@ -131,42 +131,33 @@ nun muss für den erestellten Pool auch ein Ether definiert werden, den wir auch
 
 
 
+Mit dieser Regel, wird der ausgehende Datenverkehr, der das Interface "ether1" verlässt, getarnt, indem die Quell-IP-Adresse des Datenverkehrs durch die IP-Adresse des Routers ersetzt wird. Dadurch wird der ausgehende Datenverkehr für externe Systeme so aussehen, als käme er vom Router selbst. "Scrnat" ist die Quell-NAT gemeint, die für den ausgehenden Datenverkehr zuständig ist (der über ether1 führt)
+
+>/ip/firewall/nat add action=masquerade chain=srcnat out-interface=ether1
 
 
+![Bild3](/Bilder/Bild8.png)
 
 
-
-Mit "action=masquerade" wird der Datenverkehr verschleiert.
-mit "chain=srcnat" wird die Firewall-Kette angegeben. Wir haben sie in den "srcnat"Kette platziert, die für den ausgehenden Datenverkehr verwendet wird.
-(hier haben wir einen anderen eintrag drin, siehe print
-Konfigurationen für die Firewall NAT werden festgelegt, um den ausgehenden Verkehr zu regeln. mit "out-interface=ether1" wird der Ausgangsinterface definiert bzw über welchen interface er die Verschleierung anwenden soll.
-/ip firewall nat
-add action=masquerade chain=srcnat out-interface=ether1
 
  
 
-IPsec Site to Site - Lausanne to Basel
-Alle Konfigurationen wurden über das Terminal getätigt. Mit dem Interface werden manchmal unnötige Einstellungen aktivert, welche man nur über das Terminal löschen kann.
+IPsec: Site-To-Site /  Basel <=> Lausanne
+
+Konfiguration Router Lausanne 
+
+Nun muss ein IPsec-Profil erstellt werden, das die Sicherheitsparameter für den Schlüsselaustausch und die Verschlüsselung festlegt. Es verwendet die Diffie-Hellman-Gruppe "modp2048" für den Schlüsselaustausch und den AES-128-Verschlüsselungsalgorithmus für die verschlüsselte Kommunikation.
+
+/ip/ipsec/profile add dh-group=modp2048 enc-algorithm=aes-128 name=ike1-BS
+
+![Bild3](/Bilder/Bild10.png)
 
 
-Konfiguration Router Lausanne - LS-R1
-Als aller erst wird ein IPsec Profile erstellt. Dabei werden mittels "dh-group" die Verhandlungsmethode für den Schlüsselaustausch gewählt und danach den Verschlüsselungsalgorithmus gewält.
-/ip ipsec profile
-add dh-group=modp2048 enc-algorithm=aes-128 name=ike1-BS
+Um die Art der Verschlüsselung, Authentifizierung und Schlüsselaustausch zu bestimmen. machen wir einen Vorschlag "proposal" wie dieser geschehen soll: 
 
- 
+/ip/ipsec proposaladd enc-algorithms=aes-128-cbc name=ike1-BS pfs-group=modp2048
 
- 
-
-
-
-
-Nun wird der Proposal erstellt, in welchem ebenfalls die Verhandlungsmethode und Verschlüsselungsalgorithmus eingestllt wird.
-
-/ip ipsec proposal
-add enc-algorithms=aes-128-cbc name=ike1-BS pfs-group=modp2048
-
- 
+ ![Bild3](/Bilder/Bild9.png)
 
 Weiter wird die so gennante "Gegenstelle" das Peer konfiguriert. Dabei wird die IP des zuerreichenden Router eingegeben. 
 
