@@ -373,13 +373,22 @@ nun das Konfig von samba öffnen
 
 und folgende Konfig zu unterst einfügen und speichern
 
->[shared_folder]
+> [shared_folder]
 path = /home/worker/shared_folder
 readonly = no
 inherit permisson = yes
 
+und restarten Samba
 
- 
+> service smbd restart
+
+### Test Fileshare
+
+Um nun den Zugriff auf den Fileshare in Laussanne zu testen, woird auif dem Worker1 im Internet Cafe das Laufwerk des Debian-System über die IP den zuvor erstellten Ordner gemapt: \\192.168.13.100\shared_folder
+
+für den Login verwenden wir den User den wir auf den Debian-System zuvor erstellten haben mit der IP des Debian System als Domäne: 
+- Benutzername: worker
+- PW: tbz1234
 
 
 
