@@ -343,7 +343,7 @@ zunächst muss ein Superuser samt Passwort erstellt werden
 
 > sudo useradd worker
 
-> sudo passwd worker1 
+> sudo passwd worker 
 > tbz1234
 
 Dannach installieren wie den File-Server
@@ -371,8 +371,9 @@ und erstellen einen Ordner
 
 und passen die Berechtigung und wer darauf berechtigt ist ein
 
-> chown worker1 shared_folder
-> chgrp worker1 shared_folder
+> chown worker shared_folder
+
+> chgrp worker shared_folder
 
 nun das Konfig von samba öffnen
 
@@ -391,7 +392,7 @@ und restarten Samba
 
 ### Test Fileshare
 
-Um nun den Zugriff auf den Fileshare in Laussanne zu testen, woird auif dem Worker1 im Internet Cafe das Laufwerk des Debian-System über die IP den zuvor erstellten Ordner gemapt: \\192.168.13.100\shared_folder
+Um nun den Zugriff auf den Fileshare in Lausanne zu testen, wird auf dem Worker1 im Internet Cafe das Laufwerk des Debian-System über die IP den zuvor erstellten Ordner gemapt: \\192.168.13.100\shared_folder
 
 für den Login verwenden wir den User den wir auf den Debian-System zuvor erstellten haben mit der IP des Debian System als Domäne: 
 - Benutzername: worker
