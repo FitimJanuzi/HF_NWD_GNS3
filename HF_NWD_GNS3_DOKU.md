@@ -57,13 +57,20 @@ Wenn Sie den Bericht abgeben, muss ihr Netzwerk in einem funktionsfähigen Zusta
 ### 7 Bewertungskriterien und Abgabetermin
 Informieren Sie sich bei der Kursleitung betreffend Abgabetermin und Bewertungskriterien. Zu spät abgegebene (bis 24h) Arbeiten erhalten Abzug nach Ermessen der Kursleitung. 24 Stunden nach dem Abgabetermin werden keine Arbeiten akzeptiert und die Aufgabe gilt als nicht erfüllt.
 
- ### 8 Links
+ ### 8 Links & Anleitungen
  - <a href="[de.wikipedia.org/wiki/Protokollstape]">Protokollstapel</a>
  - <a href="[mikrotik.com/]">Mikrotik</a>
  - <a href="[help.mikrotik.com/docs/display/ROS/RouterOS]">RouterOS</a>
  - <a href="[www.wireguard.com]">Wireguard</a>
  - <a href="[www.cisco.com/c/en/us/td/docs/net_mgmt/vpn_solutions_center/2-0/ip_security/provisioning/guide/IPsecPG1.html]">Cisco IPsec Introduction</a>
  -  <a href="[blog.ipfire.org/post/why-not-wireguard]">Blogeintrag über Wireguard</a>
+
+ - https://help.mikrotik.com/docs/display/ROS/WireGuard
+ - https://wiki.mikrotik.com/wiki/Manual:IP/IPsec
+ - https://wiki.mikrotik.com/wiki/Manual:IP/Firewall/Filter
+ - https://help.mikrotik.com/docs/display/ROS/IP+Routing
+ - https://wiki.archlinux.org/title/WireGuard
+ - https://introserv.com/docs/wireguard-windows-setup/
 
 # Doku
 
