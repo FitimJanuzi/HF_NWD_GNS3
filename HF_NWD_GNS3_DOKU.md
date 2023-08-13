@@ -101,35 +101,34 @@ Nun muss auch das routing konfiguert werden werden.
 ![Bild3](/Bilder/Bild3.png)
  
 
-Und auch die DNS, damit erlauben wir dass dass der Router DNS anfragen kontaktiert werden kann
+Damit nun der Router externe DNS anfragen bearbeiten kann, muss auch die Funktion "allow-remote-requests" konfiguriert werden
+
 > /ip/dns/set/allow-remote-requests=yes servers=8.8.8.8
 
 ![Bild3](/Bilder/Bild4.png)
 
 
 
+Dannach wird DHCP konfiguriert
+
+> /ip/dhcp-server/network add address=192.168.13.0/24 dns-server=192.168.13.1 gateway=192.168.13.1
+
+![Bild3](/Bilder/Bild5.png)
 
 
+und der Range für DHCP gesetzt
+
+> /ip/pool/add name=dhcp_pool1 ranges=192.168.13.50-192.168.13.100
+
+![Bild3](/Bilder/Bild6.png)
 
 
-(vielleicht den Wizard hier nehmen)
-Dannach wird der DHCP konfiguriert
+nun muss für den erestellten Pool auch ein Ether definiert werden, den wir auch benennen
 
+> /ip/dhcp-server/add address-pool=dhcp_pool1 interface=ether2 name=dhcp1
 
-/ip/dhcp-server/network> add address=192.168.13.0/24 dns-server=192.168.13.1 gateway=192.168.13.1
+![Bild3](/Bilder/Bild7.png)
 
- 
-
-und der range für DHCP gestezt
-/ip pool add name=dhcp_pool1 ranges=192.168.13.50-192.168.13.100
- 
-
-Braucht es das wirklich soezifisch auf ether2? ? 
-Mit "address-pool=dhcp_pool1" wird der Adress Pool festgelegt und gilt für den Interface "ether2". Zusätzlich wird der Name "dhcp1" festgelegt.
-
-/ip / dhcp-server/add address-pool=dhcp_pool1 interface=ether2 name=dhcp1
-
- 
 
 
 
