@@ -244,19 +244,12 @@ Sobald der Wireguard (unterhalb) aufgebaut wurde, wurde der IPSec Tunnel kontrol
 
 Nun muss der VPN WireGuard eingerichtet werden, dazu müssen auf beide Seiten Schnittstelen konfiguriert werden. Diese Schnittstelle werden den eingehenden Datenverkehr über einen zu bestimmenden Port empfangen der für sichere Netzwerkkommunikation genutzt wird.
 
-Router Lausanne
+#### Router Lausanne
 
 > /interface/wireguard add listen-port=13234 name=wireguardZH
  
 ![Bild3](/Bilder/Bild27.png)
 
-
-
-das gleiche beim Router Zürich 
-
-> /interface/wireguard> add listen-port=13234 name=wireguardLS
- 
-![Bild3](/Bilder/Bild28.png)
  
 Nun müssen wir den Partner (Peer) definieren. Für die Verschlüsselung und Authentifizierung für die Kommunikation zwischen den Peers geben wir den Public-key von Zürich mit
 
@@ -264,69 +257,40 @@ Nun müssen wir den Partner (Peer) definieren. Für die Verschlüsselung und Aut
 
 ![Bild3](/Bilder/Bild48.PNG)
 
+auch ein neues routing muss nun configuriert werden
 
-LS-R1
+> /ip/address add address=192.168.250.1/30 interface=wireguardZH
 
-/interface/wireguard/peers
-add allowed-address=192.168.9.0/24 endpoint-address=203.0.113.98 endpoint-port=13234 interface=wireguardZH \
-public-key="cmbG2BELjzi4wWXxGt7ALY0XfKUj4poZd+GzhvaYzRk="
-#Public Key von Zürich
-   ![Bild3](/Bilder/Bild20.png)
-ZH-R1
+> /ip/route add dst-address=192.168.9.0/24 gateway=wireguardZH
 
-/interface/wireguard/peers
-add allowed-address=192.168.13.0/24 endpoint-address=203.0.113.70 endpoint-port=13234 interface=wireguardLS \
-public-key="nT2Bxt9UtkfJCOy8xCPGzyNE1s+G9K5EWzjUH6clcSA="
-#Public Key von Lausanne
- ![Bild3](/Bilder/Bild20.png)
+![Bild3](/Bilder/Bild49.PNG)
+
+Nun müssen wir die Forward und Input Regel für die Firewall-Filter setzen
+
+> /ip/firewall/filter add action=accept chain=input dst-port=13234 protocol=udp src-address=203.0.113.98
+> /ip/firewall/filter add action=accept chain=input dst-port=13234 protocol=udp src-address=192.168.250.2
+> /ip/firewall/filter add action=accept chain=forward dst-address=192.168.9.0/24 src-address=192.168.13.0/24
+> /ip/firewall/filter add action=accept chain=forward dst-address=192.168.13.0/24 src-address=192.168.9.0/24
+
+![Bild3](/Bilder/Bild50.PNG)
+
+
+#### Router Zürich 
+
+nun das gleiche beim Router Zürich
+
+> /interface/wireguard> add listen-port=13234 name=wireguardLS
  
+> /interface/wireguard/peers add allowed-address=192.168.13.0/24 endpoint-address=203.0.113.70 endpoint-port=13234 interface=wireguardLS \ public-key="lZexpEtJY2Pdb4X0oC7D63iOTMZqziYirHybnePaXkg="
 
-IP and routing configuration
-Zum Schluss müssen die IP und Routing Informationen konfiguriert werden, um den Datenverekhr über den Tunnel zu ermöglichen
-LS-R1
-/ip/address
-add address=192.168.250.1/30 interface=wireguardZH
+> /ip/address add address=192.168.250.1/30 interface=wireguardLS
 
- 
-/ip/route
-add dst-address=192.168.9.0/24 gateway=wireguardZH
+> /ip/route add dst-address=192.168.9.0/24 gateway=wireguardZH
 
- 
-
-
-ZH-R1
-/ip/address
-add address=192.168.250.1/30 interface=wireguardLS
- 
-
-
-/ip/route
-add dst-address=192.168.13.0/24 gateway=wireguardLS
-
- 
-
-
-Firewall considerations
-Bei der Firewall müssen auch noch Einstellungen vorgenommen werden. Standardmässig wird der Tunnel blockiert und somit müssen die Input-Chains von beiden Seiten akzeptiert, um die Kommunikation zu gewährleisten.
-LS-R1
-/ip/firewall/filter
-add action=accept chain=input dst-port=13234 protocol=udp src-address=203.0.113.98
-add action=accept chain=input dst-port=13234 protocol=udp src-address=192.168.250.2
-add action=accept chain=forward dst-address=192.168.9.0/24 src-address=192.168.13.0/24
-add action=accept chain=forward dst-address=192.168.13.0/24 src-address=192.168.9.0/24
-
- 
-
-
-
-ZH-R1
-
-/ip/firewall/filter
-add action=accept chain=input dst-port=13234 protocol=udp src-address=203.0.113.70
-add action=accept chain=input dst-port=13234 protocol=udp src-address=192.168.250.1
-add action=accept chain=forward dst-address=192.168.13.0/24 src-address=192.168.9.0/24
-add action=accept chain=forward dst-address=192.168.9.0/24 src-address=192.168.13.0/24
-
+> /ip/firewall/filter add action=accept chain=input dst-port=13234 protocol=udp src-address=203.0.113.70
+> /ip/firewall/filter add action=accept chain=input dst-port=13234 protocol=udp src-address=192.168.250.1
+> /ip/firewall/filter add action=accept chain=forward dst-address=192.168.13.0/24 src-address=192.168.9.0/24
+> /ip/firewall/filter add action=accept chain=forward dst-address=192.168.9.0/24 src-address=192.168.13.0/24
  
 
 
@@ -334,38 +298,7 @@ add action=accept chain=forward dst-address=192.168.9.0/24 src-address=192.168.1
 
 
 
-
-
-
-Router Lausanne
-Zuerst muss ein WireGuard Interface konfiguriert und die IP Adresse definiert werden.
-
-/interface wireguard
-add listen-port=13233 mtu=1420 name=MTW_LS
-
  
-/interface wireguard
-add listen-port=13233 mtu=1420 name=MTW_LS
-
- 
-/ip address
-add address=192.168.14.1/24 interface=MTW_LS network=192.168.14.0
-
- 
-
-
-Danach müssen die interface wireguard peers gesetzt. Somit wird bei "allowed-address" die erlaubte IP Adresse definiert, welche über den interface (in unserem Fall "MTW_LS) erlaubt wird.
-
-/interface wireguard peers
-add allowed-address=192.168.14.2/32 interface=MTW_LS public-key=\ "p92QfHxoD0kNDmKduz6xOCYtrWunlQD6rqPUNljVO0w="
-
-p92QfHxoD0kNDmKduz6xOCYtrWunlQD6rqPUNljVO0w=
-
-(von wireguard beim Worker01 ablesen)
- 
-
-/ip firewall filter
-add chain=forward action=accept src-address=192.168.11.0/24 dst-address=192.168.13.0/24 connection-state=established,related
 
 /ip firewall filter
 
@@ -388,7 +321,7 @@ add action=accept chain=input comment="allow WireGuard traffic" src-address=192.
 add action=accept chain=srcnat dst-address=192.168.11.0/24 src-address=192.168.13.0/24
 
 
-Debian WIN PW: Passw0rd!
+
 
 
 
