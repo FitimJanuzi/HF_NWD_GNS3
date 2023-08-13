@@ -330,9 +330,53 @@ Nun erstellen wir eine Regel die den Datenverkehr über WireGuard erlaubt, indem
 
 ### Zugriff auf File-Share
 
-Damit Worker1 aus dem Internetcafe zugriff auf den Debian-PC von Lausanne bekommt, muss zunächst der Debian Server vorberietet werden
+Damit Worker1 aus dem Internetcafe Zugriff auf Dateien das Debian-System von Lausanne bekommt, muss zunächst der Debian-System vorberietet werden, indem wir einen einen Samba File-Share Server installieren
 
+zunächst muss ein Superuser samt Passwort erstellt werden
 
+> sudo useradd worker
+
+> sudo passwd worker1 
+> tbz1234
+
+Dannach installieren wie den File-Server
+
+aber zunächst noch der paket-manager updatet
+
+> sudo apt -get update
+
+dannach installieren
+
+> sudo apt-get install samba
+
+dannach erstellen wir für den Samba FileShare einen User
+
+> sudo smbpasswd -a worker
+> tbz1234
+
+damit der user Zugriff bekommt, wechslen wir ihn zu Root User
+
+> sudo -s
+
+und erstellen einen Ordner
+
+> mkdir /home/worker/shared_folder
+
+und passen die Berechtigung und wer darauf berechtigt ist ein
+
+> chown worker1 shared_folder
+> chgrp worker1 shared_folder
+
+nun das Konfig von samba öffnen
+
+> sudo nano /etc/samba/smb.conf
+
+und folgende Konfig zu unterst einfügen und speichern
+
+>[shared_folder]
+path = /home/worker/shared_folder
+readonly = no
+inherit permisson = yes
 
 
  
