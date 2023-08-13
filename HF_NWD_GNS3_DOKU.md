@@ -182,31 +182,29 @@ Nun muss auch eine IPsec-Richtlinie erstellt werde, um den Datenverkehr zwischen
 ![Bild3](/Bilder/Bild14.png)
 
 
-Nun wird zwar der IPsec Tunnel aufgebaut, jedoch können noch keine Daten über den IPsec-Tunnel gesendet werden. Dies liegt daran, dass beide Router NAT-Regeln (Masquerade) haben, die die Quelladressen ändern, bevor ein Paket verschlüsselt wird. Der Router ist nicht in der Lage, das Paket zu verschlüsseln, weil die Quelladresse nicht mit der in der Richtlinienkonfiguration angegebenen Adresse übereinstimmt.
-Um dies zu beheben, müssen wir eine IP/Firewall/NAT-Umgehungsregel einrichten. Dabei ist es sehr wichtig, dass die Bypass-Regel an erster Stelle aller anderen NAT-Regeln steht.  
+Wir haben unten die Problematik von IPSec und NAT erklärt, dieser wir nun entgegenwirken müssen, indem wir eine Sonderregel setzen: 
 
-Ein weiteres Problem ist, dass bei aktiviertem IP/Fasttrack das Paket die IPsec-Richtlinien umgeht. Wir müssen also eine Akzeptanzregel vor FastTrack hinzufügen.
 
-/ip firewall filter
-add chain=forward action=accept place-before=0 src-address=192.168.11.0/24 dst-address=192.168.13.0/24 connection-state=established,related
-add chain=forward action=accept place-before=1 src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
+>/ip/firewall/filter add chain=forward action=accept src-address=192.168.11.0/24 dst-address=192.168.13.0/24 connection-state=established,related
+
+>/ip/firewall/filter add chain=forward action=accept src-address=192.168.13.0/24 dst-address=192.168.11.0/24 connection-state=established,related
  
+![Bild3](/Bilder/Bild16.png)
 
 
 
-Dies kann jedoch zu einer erheblichen Belastung der CPU des Routers führen, wenn eine größere Anzahl von Tunneln und erheblicher Datenverkehr in jedem Tunnel vorhanden sind. Um dies entgegen zu wirken kann die Verbindungsverfolgung Umgangen werden.
+### Konfiguration Router Basel 
 
-/ip firewall raw
-add action=notrack chain=prerouting src-address=192.168.13.0/24 dst-address=192.168.11.0/24
+das gleiche nun für Basel
+
+> /ip/ipsec/profile  add dh-group=modp2048 enc-algorithm=aes-128 name=ike1-LS
+
+![Bild3](/Bilder/Bild18.png)
  
+> /ip/ipsec/proposal add enc-algorithms=aes-128-cbc name=ike1-LS pfs-group=modp2048
 
-Konfiguration Router Basel - BS-R1
 
-Bei dem Router in Basel müssen die geleichen Einstellungen wie bei Lausanne vorgenommen werden. Dabei muss aber darauf geachtet werden, dass spezifische Einstellungen wie IP oder Public- Private-Keys.
-
- 
-/ip ipsec proposal
-add enc-algorithms=aes-128-cbc name=ike1-LS pfs-group=modp2048
+ ![Bild3](/Bilder/Bild19.png)
 
  
 
