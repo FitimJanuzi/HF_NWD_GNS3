@@ -2,7 +2,7 @@
 
 Zuerst wird Lausanne aufgebaut:
  
-AUF GNS3 wird ein Router, Switch und zwei PC`s aufgebaut
+AUF GNS3 wird ein Router und ein Debian System aufgebaut
 
 ![Bild1](/Bilder/1.PNG)
 
