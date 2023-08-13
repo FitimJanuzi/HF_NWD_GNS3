@@ -163,17 +163,23 @@ für eine ipSEC verbindung muss nun auch die andere Seite, wohin der Tunnel füh
 
 > /ip/ipsec/peer add address=203.0.113.82/32 name=ike1-BS profile=ike1-BS
 
+ ![Bild3](/Bilder/Bild12.png)
 
-Als nächter Schritt wird die "Identity" erstellt, wobei ein gemeinsamen sogennanten "Pre-Shared Key" defineirt wrid. Der Pre-Shared Key wird ebenfalls auf dem entfernten Router hinterlegt.
+
+Für die Kommunikation mit ipSEC brauchen wir nun auch eine Idnetität mit der wir kommunizieren können, der wir einen Passwort zur authentifizierung setzen
  
 
+> /ip/ipsec/identity add peer=ike1-BS secret=tbz1234
+
+ ![Bild3](/Bilder/Bild13.png)
 
 
 
+Nun muss auch eine IPsec-Richtlinie erstellt werde, um den Datenverkehr zwischen der Quell und dem Ziel über den IPsec-Tunnel zu schützen. Dies erfolgt durch die Erstellung eines verschlüsselten Tunnels zwischen den angegebenen Netzwerken.
 
+ > /ip/ipsec/policy add dst-address=192.168.11.0/24 peer=ike1-BS proposal=ike1-BS src-address=192.168.13.0/24 tunnel=yes
 
-Weiter wird eine Richtlinie erstellen, die die Netze/Hosts steuert, zwischen denen der Datenverkehr verschlüsselt werden soll.
- 
+![Bild3](/Bilder/Bild14.png)
 
 
 Nun wird zwar der IPsec Tunnel aufgebaut, jedoch können noch keine Daten über den IPsec-Tunnel gesendet werden. Dies liegt daran, dass beide Router NAT-Regeln (Masquerade) haben, die die Quelladressen ändern, bevor ein Paket verschlüsselt wird. Der Router ist nicht in der Lage, das Paket zu verschlüsseln, weil die Quelladresse nicht mit der in der Richtlinienkonfiguration angegebenen Adresse übereinstimmt.
