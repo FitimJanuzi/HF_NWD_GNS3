@@ -206,30 +206,24 @@ das gleiche nun für Basel
 
  ![Bild3](/Bilder/Bild19.png)
 
- 
 
+> /ip/ipsec/peer add address=203.0.113.70/32 name=ike1-LS profile=ike1-LS
 
-/ip ipsec peer
-add address=203.0.113.70/32 name=ike1-LS profile=ike1-LS
- 
+ ![Bild3](/Bilder/Bild20.png)
 
-/ip ipsec identity
-add peer=ike1-LS
+> /ip/ipsec/identity add peer=ike1-LS
 
- 
+  ![Bild3](/Bilder/Bild21.png)
 
-/ip ipsec policy
-add dst-address=192.168.13.0/24 peer=ike1-LS proposal=ike1-LS src-address=192.168.11.0/24 tunnel=yes
+/ip ipsec policy add dst-address=192.168.13.0/24 peer=ike1-LS proposal=ike1-LS src-address=192.168.11.0/24 tunnel=yes
 
- 
+  ![Bild3](/Bilder/Bild22.png)
 
 
 
+/ip/firewall/nat add action=accept chain=srcnat dst-address=192.168.13.0/24 src-address=192.168.11.0/24
 
-/ip firewall nat
-add action=accept chain=srcnat dst-address=192.168.13.0/24 src-address=192.168.11.0/24
-
- 
+![Bild3](/Bilder/Bild20.png)
 
 !!!
 /ip firewall filter
@@ -244,7 +238,7 @@ name="default" auth-algorithms=sha1
 /ip ipsec proposal
 add enc-algorithms= aes-256-cbc,aes-192-cbc,aes-128-cbc name=default pfs-group=modp1024
 
-
+ ![Bild3](/Bilder/Bild20.png)
 
 
 
@@ -257,7 +251,7 @@ add enc-algorithms= aes-256-cbc,aes-192-cbc,aes-128-cbc name=default pfs-group=m
 /ip firewall raw
 add action=notrack chain=prerouting src-address=192.168.11.0/24 dst-address=192.168.13.0/24
 
-
+ ![Bild3](/Bilder/Bild20.png)
  
 
 
@@ -275,17 +269,16 @@ LS-R1
 /interface/wireguard
 add listen-port=13234 name=wireguardZH
  
+ ![Bild3](/Bilder/Bild20.png)
 
 
 
 
-
-
-ZH-R1
+ZH R1
 
 /interface/wireguard> add listen-port=13234 name=wireguardLS
  
-
+ ![Bild3](/Bilder/Bild20.png)
 Peer configuration
 Die Peer configuration definiert, wer die WireGuard-Schnittstelle nutzen kann und welche Art von Datenverkehr darüber gesendet werden kann. Um die Gegenstelle zu identifizieren, muss ihr öffentlicher Schlüssel zusammen mit der erstellten WireGuard-Schnittstelle angegeben werden.
 
@@ -295,14 +288,14 @@ LS-R1
 add allowed-address=192.168.9.0/24 endpoint-address=203.0.113.98 endpoint-port=13234 interface=wireguardZH \
 public-key="cmbG2BELjzi4wWXxGt7ALY0XfKUj4poZd+GzhvaYzRk="
 #Public Key von Zürich
-  
+   ![Bild3](/Bilder/Bild20.png)
 ZH-R1
 
 /interface/wireguard/peers
 add allowed-address=192.168.13.0/24 endpoint-address=203.0.113.70 endpoint-port=13234 interface=wireguardLS \
 public-key="nT2Bxt9UtkfJCOy8xCPGzyNE1s+G9K5EWzjUH6clcSA="
 #Public Key von Lausanne
-
+ ![Bild3](/Bilder/Bild20.png)
  
 
 IP and routing configuration
