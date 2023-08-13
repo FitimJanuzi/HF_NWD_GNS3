@@ -142,30 +142,29 @@ Mit dieser Regel, wird der ausgehende Datenverkehr, der das Interface "ether1" v
 
  
 
-IPsec: Site-To-Site /  Basel <=> Lausanne
+### IPsec: Site-To-Site - Basel <=> Lausanne
 
-Konfiguration Router Lausanne 
+#### Konfiguration Router Lausanne 
 
 Nun muss ein IPsec-Profil erstellt werden, das die Sicherheitsparameter für den Schlüsselaustausch und die Verschlüsselung festlegt. Es verwendet die Diffie-Hellman-Gruppe "modp2048" für den Schlüsselaustausch und den AES-128-Verschlüsselungsalgorithmus für die verschlüsselte Kommunikation.
 
-/ip/ipsec/profile add dh-group=modp2048 enc-algorithm=aes-128 name=ike1-BS
+> /ip/ipsec/profile add dh-group=modp2048 enc-algorithm=aes-128 name=ike1-BS
 
 ![Bild3](/Bilder/Bild10.png)
 
 
-Um die Art der Verschlüsselung, Authentifizierung und Schlüsselaustausch zu bestimmen. machen wir einen Vorschlag "proposal" wie dieser geschehen soll: 
+Um die Art der Verschlüsselung, Authentifizierung und Schlüsselaustausch zu bestimmen, machen wir mit "proposel" einen Vorschlag wie dieser geschehen soll: 
 
-/ip/ipsec proposaladd enc-algorithms=aes-128-cbc name=ike1-BS pfs-group=modp2048
+> /ip/ipsec/proposal add enc-algorithms=aes-128-cbc name=ike1-BS pfs-group=modp2048
 
- ![Bild3](/Bilder/Bild9.png)
+ ![Bild3](/Bilder/Bild11.png)
 
-Weiter wird die so gennante "Gegenstelle" das Peer konfiguriert. Dabei wird die IP des zuerreichenden Router eingegeben. 
+für eine ipSEC verbindung muss nun auch die andere Seite, wohin der Tunnel führen soll, bestimmt werden. Dazu wird hier ein neuer IPsec-Peer mit dem Namen "ike1-BS" hinzugefügt, der die IP-Adresse 203.0.113.82 hat. Dieser Peer wird das zuvor definierte IPsec-Profil "ike1-BS" verwenden, um eine sichere Verbindung mit diesem Remote-Partner herzustellen.
 
-/ip ipsec peer add address=203.0.113.82/32 name=ike1-BS profile=ike1-BS
+> /ip/ipsec/peer add address=203.0.113.82/32 name=ike1-BS profile=ike1-BS
 
- 
 
-Als näcshter Schritt wird die "Identity" erstellt, wobei ein gemeinsamen sogennanten "Pre-Shared Key" defineirt wrid. Der Pre-Shared Key wird ebenfalls auf dem entfernten Router hinterlegt.
+Als nächter Schritt wird die "Identity" erstellt, wobei ein gemeinsamen sogennanten "Pre-Shared Key" defineirt wrid. Der Pre-Shared Key wird ebenfalls auf dem entfernten Router hinterlegt.
  
 
 
