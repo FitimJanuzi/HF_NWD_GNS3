@@ -4,7 +4,7 @@ Zuerst wird Lausanne aufgebaut:
  
 AUF GNS3 wird ein Router, Switch und zwei PC`s aufgebaut
 
-[Bilder/1.PNGNG](https://github.com/FitimJanuzi/HF_NWD_GNS3/blob/cbb958b4afa32e264dad3a0db580db7d49970ad5/Bilder/1.PNG)
+[Bilder/1.PNGNG]
 
 1 Einleitung
 Sie haben als Netzwerkingenieur den Auftrag erhalten in einem KMU einen zusätzlichen Geschäftsstandort per VPN zu erschliessen. Das KMU hat keinen eigenen Betriebsinformatiker. Jedes Mal, wenn eine Erweiterung des Netzwerkes benötigt wurde, hat das KMU eine andere IT-Firma beauftrag. Das hat zur Folge, dass überall unterschiedliche Geräte und VPN-Technologien eingesetzt wurden. Das ist eine optimale Gelegenheit, um neue VPN-Technologien kennenzulernen und zu vergleichen! Die Wahl des Gerätes für Lausanne steht Ihnen frei. Alle anderen Standorte haben einen funktionierenden Internetanschluss und eine funktionierende VPN-Verbindung an den Hauptstandort in Zürich. In der Mitte finden Sie ein Netzwerk eines fiktiven ISP. Der verwendet OSPF als internes Routing-Protokoll (iBGP eignet sich für ISP besser). Über den ISP können sie auch auf das Internet zugreifen. Lernziele:
