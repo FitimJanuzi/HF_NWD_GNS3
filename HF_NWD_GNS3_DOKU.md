@@ -1,10 +1,6 @@
 # HF_NWD_GNS3
 
-Zuerst wird Lausanne aufgebaut:
- 
-AUF GNS3 wird ein Router und ein Debian System aufgebaut
 
-![Bild1](/Bilder/1.PNG)
 ## Ausgangslage
 
 
@@ -69,30 +65,47 @@ Informieren Sie sich bei der Kursleitung betreffend Abgabetermin und Bewertungsk
  - <a href="[www.cisco.com/c/en/us/td/docs/net_mgmt/vpn_solutions_center/2-0/ip_security/provisioning/guide/IPsecPG1.html]">Cisco IPsec Introduction</a>
  -  <a href="[blog.ipfire.org/post/why-not-wireguard]">Blogeintrag über Wireguard</a>
 
-Dannach werden die Einzelteile konfiguriert:
+# Doku
+
+## Aufbau Lausanne :
+ 
+ AUF GNS3 wird im Firmenstandort Lausanne wird zunächst ein Router und ein Debian System aufgebaut
+
+![Bild1](/Bilder/1.PNG)
+
+Dannach erfolgt die Konfiguration:
 
 Router
+
 Zunächst den Namen geändert
-/system identity set name=LS-R1
 
-Dannach Ether1 definiert: 
-/ip address add address=203.0.113.70/30 interface=ether1 network=203.0.113.69
+> /system/identity/set name=LS-R1
 
-Ether2
-/ip address add address=192.168.13.1/24 interface=ether2 network=192.168.13.0
-Kontrolle mittels: ip/adresse/print
+![Bild2](/Bilder/Bild46.PNG)
+
+
+
+Dannach Ether1 und Ether2 definiert: 
+
+> /ip/address/add address=203.0.113.70/30 interface=ether1 network=203.0.113.69
+
+> /ip/address/add address=192.168.13.1/24 interface=ether2 network=192.168.13.0
+
+ ![Bild3](/Bilder/Bild2.png)
  
 
 Nun muss auch das routing konfiguert werden werden.
 
-/ip route add dst-address=0.0.0.0/0 gateway=203.0.113.69
+> /ip/route/add dst-address=0.0.0.0/0 gateway=203.0.113.69
 
+![Bild3](/Bilder/Bild3.png)
  
 
 Und auch die DNS, damit erlauben wir dass dass der Router DNS anfragen kontaktiert werden kann
-/ip dns set allow-remote-requests=yes servers=8.8.8.8
+> /ip/dns/set/allow-remote-requests=yes servers=8.8.8.8
 
- 
+![Bild3](/Bilder/Bild4.png)
+
 
 
 
